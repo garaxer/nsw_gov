@@ -40,19 +40,47 @@ const createMockEvent = (
   pathParameters: {},
 });
 
+// Parse command line arguments
+function parseArgs() {
+  const args = process.argv.slice(2);
+  
+  // If no args, show usage
+  if (args.length === 0) {
+    console.log('🔍 Usage examples:');
+    console.log('  yarn dev "q=Circular Quay&format=json"');
+    console.log('  yarn dev (will show missing parameter error)');
+    console.log('');
+  }
+  
+  const queryString = args[0] || '';
+  const queryParams: Record<string, string> = {};
+  
+  // Parse query string
+  if (queryString) {
+    const params = new URLSearchParams(queryString);
+    for (const [key, value] of params.entries()) {
+      queryParams[key] = value;
+    }
+  }
+  
+  return {
+    path: '/',
+    method: 'GET',
+    queryParams
+  };
+}
+
 // Main function to run the handler
 async function runLocal() {
   try {
-    console.log('🚀 Running Lambda function locally...\n');
+    console.log('🚀 Running Address Lambda function locally...\n');
     
-    // Create a mock event - you can customize this as needed
-    const event = createMockEvent(
-      process.argv[2] || '/',           // path from command line arg
-      process.argv[3] || 'GET',         // method from command line arg
-      process.argv[4] ? JSON.parse(process.argv[4]) : undefined  // body from command line arg
-    );
+    const { path, method, queryParams } = parseArgs();
     
-    console.log('📝 Mock Event:', JSON.stringify(event, null, 2));
+    // Create a mock event
+    const event = createMockEvent(path, method, undefined, queryParams);
+    
+    console.log('📝 Query Parameters:', queryParams);
     console.log('\n' + '='.repeat(50) + '\n');
     
     // Call the handler
