@@ -1,0 +1,29 @@
+{
+  "name": "gary-invoice",
+  "private": true,
+  "version": "1.0.0",
+  "scripts": {
+    "lint": "eslint .",
+    "lint-script": "bash scripts/lint.sh",
+    "lint-fix": "bash scripts/lint.sh --fix true",
+    "build:web": "cd web/ && yarn build",
+    "build:stack": "cd infrastructure/ && yarn build",
+    "deploy": "cd infrastructure/ && yarn deploy",
+    "destroy": "cd infrastructure/ && yarn destroy"
+  },
+  "workspaces": {
+    "packages": [
+      "infrastructure",
+      "handlers"
+    ]
+  },
+  "devDependencies": {
+    "@types/node": "^24.5.2",
+    "@eslint/eslintrc": "^3.3.1",
+    "eslint": "^9.36.0",
+    "@eslint/js": "^9.36.0",
+    "@typescript-eslint/parser": "^8.44.1",
+    "globals": "^16.4.0",
+    "typescript": "^5.9.2"
+  }
+}

@@ -1,0 +1,11 @@
+{
+  "ts-node": {
+    "files": true
+  },
+  "extends": "../tsconfig.json",
+  "include": ["lambdas/**/*", "../global.d.ts", "index.ts"],
+  "compilerOptions": {
+    "outDir": "dist",
+    "noEmit": false
+  }
+}
