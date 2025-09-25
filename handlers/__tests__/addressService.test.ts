@@ -1,6 +1,7 @@
 import { extractLocationData, getLatLong, lookupAddress } from '../src/services/addressService';
 import { getGeocodedAddress, getAdministrativeBoundary } from '../src/clients/nsw-api';
 import { InternalServerError } from '../src/errors/http';
+import { AdministrativeBoundaryResponse, GeocodeResponse } from 'handlers/src/types/domain';
 
 jest.mock('../src/clients/nsw-api');
 const mockGetGeocodedAddress = getGeocodedAddress as jest.MockedFunction<typeof getGeocodedAddress>;
@@ -26,7 +27,7 @@ describe('AddressService', () => {
 
   describe('extractLocationData', () => {
     it('should extract location data correctly', () => {
-      const result = extractLocationData(mockGeocodeResponse as any, mockBoundaryResponse as any);
+      const result = extractLocationData(mockGeocodeResponse as GeocodeResponse, mockBoundaryResponse as AdministrativeBoundaryResponse);
       
       expect(result).toEqual({
         latitude: -33.429,
@@ -40,7 +41,7 @@ describe('AddressService', () => {
 
   describe('getLatLong', () => {
     it('should return coordinates tuple', () => {
-      const result = getLatLong(mockGeocodeResponse as any);
+      const result = getLatLong(mockGeocodeResponse as GeocodeResponse);
       expect(result).toEqual([149.567, -33.429]);
     });
   });
@@ -57,8 +58,8 @@ describe('AddressService', () => {
         features: [{ properties: { districtname: district } }]
       };
 
-      mockGetGeocodedAddress.mockResolvedValue(geocodeResponse as any);
-      mockGetAdministrativeBoundary.mockResolvedValue(boundaryResponse as any);
+      mockGetGeocodedAddress.mockResolvedValue(geocodeResponse as GeocodeResponse);
+      mockGetAdministrativeBoundary.mockResolvedValue(boundaryResponse as AdministrativeBoundaryResponse);
 
       const result = await lookupAddress(address);
       expect(result.address).toBe(address);

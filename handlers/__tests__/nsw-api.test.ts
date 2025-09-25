@@ -28,7 +28,7 @@ describe("NSW API Client", () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
           json: jest.fn().mockResolvedValue(mockResponse),
-        } as any);
+        } as unknown as Promise<Response>);
 
         const result = await getGeocodedAddress(address);
         expect(result.features).toHaveLength(1);
@@ -40,7 +40,7 @@ describe("NSW API Client", () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: jest.fn().mockResolvedValue({ features: [] }),
-      } as any);
+      } as unknown as Promise<Response>);
 
       await expect(getGeocodedAddress("INVALID ADDRESS")).rejects.toThrow(
         NotFoundError
@@ -52,7 +52,7 @@ describe("NSW API Client", () => {
         ok: false,
         status: 500,
         statusText: "Internal Server Error",
-      } as any);
+      } as unknown as Promise<Response>);
 
       await expect(getGeocodedAddress("test address")).rejects.toThrow(
         InternalServerError
@@ -74,7 +74,7 @@ describe("NSW API Client", () => {
         mockFetch.mockResolvedValueOnce({
           ok: true,
           json: jest.fn().mockResolvedValue(mockResponse),
-        } as any);
+        } as unknown as Promise<Response>);
 
         const result = await getAdministrativeBoundary(lng, lat);
         expect(result.features[0].properties.districtname).toBe(district);
@@ -85,7 +85,7 @@ describe("NSW API Client", () => {
       mockFetch.mockResolvedValueOnce({
         ok: true,
         json: jest.fn().mockResolvedValue({ features: [] }),
-      } as any);
+      } as unknown as Promise<Response>);
 
       await expect(getAdministrativeBoundary(0, 0)).rejects.toThrow(
         NotFoundError

@@ -3,28 +3,25 @@
   "private": true,
   "version": "1.0.0",
   "scripts": {
-    "lint": "eslint .",
-    "build:stack": "cd infrastructure/ && yarn build",
-    "deploy": "cd infrastructure/ && yarn deploy",
-    "destroy": "cd infrastructure/ && yarn destroy",
-    "dev": "yarn workspace handlers dev",
-    "build": "yarn workspaces foreach -A -t run build",
-    "test": "yarn workspaces foreach -A -t run test"
+    "build:stack": "cd infrastructure/ && npm run build",
+    "deploy": "cd infrastructure/ && npm run deploy",
+    "destroy": "cd infrastructure/ && npm run destroy",
+    "dev": "npm run dev --workspace=handlers",
+    "lint": "npm run lint --workspaces",
+    "build": "npm run build --workspaces",
+    "test": "npm run test --workspaces"
   },
   "workspaces": [
     "infrastructure",
     "handlers"
   ],
-  "devDependencies": {
-    "@eslint/eslintrc": "^3.3.1",
-    "@eslint/js": "^9.36.0",
-    "@types/node": "^24.5.2",
-    "@typescript-eslint/eslint-plugin": "^8.44.1",
-    "@typescript-eslint/parser": "^8.44.1",
-    "eslint": "^9.36.0",
-    "globals": "^16.4.0",
-    "jiti": "^2.6.0",
-    "typescript": "^5.9.2"
+  "engines": {
+    "node": ">=20.0.0",
+    "npm": ">=8.0.0"
   },
-  "packageManager": "yarn@4.6.0"
+  "devDependencies": {
+    "ts-node": "^10.9.2",
+    "@types/node": "^24.5.2",
+    "typescript": "^5.9.2"
+  }
 }

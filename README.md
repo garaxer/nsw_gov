@@ -2,12 +2,15 @@
 
 Serverless function for NSW address lookup using government spatial APIs. Returns coordinates, suburb, and electoral district information.
 
+## Requirements
+1. Node 22
+
 ## Quick Start
 
 ```bash
 # Install and test locally
-yarn install && cd handlers
-yarn dev "q=346 PANORAMA AVENUE BATHURST"
+npm install && cd handlers
+npm run dev "q=346 PANORAMA AVENUE BATHURST"
 ```
 
 ## API Usage
@@ -47,18 +50,18 @@ graph LR
 
 ```bash
 # Valid address test
-yarn dev "q=1 MARTIN PLACE SYDNEY"
+npm run dev "q=1 MARTIN PLACE SYDNEY"
 
 # Error handling test  
-yarn dev "q=INVALID ADDRESS"
+npm run dev "q=INVALID ADDRESS"
 
 # Run tests
-yarn test
+npm run test
 ```
 
 ## Deployment
 
 ```bash
 cd infrastructure
-yarn build && npx cdk deploy
+npm run build && npm run deploy
 ```
