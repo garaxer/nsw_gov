@@ -34,6 +34,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (
         suburbName: result.suburbName,
         stateElectoralDistrict: result.stateElectoralDistrict,
         propertyId: result.propertyId,
+        principalAddressSiteOid: result.principalAddressSiteOid,
         query: query,
       },
       200,

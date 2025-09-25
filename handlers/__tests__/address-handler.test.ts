@@ -54,7 +54,7 @@ describe("Address Handler Unit Tests", () => {
         {
           id: 3973380,
           geometry: { coordinates: [149.56705027262, -33.4296842928957, 0] },
-          properties: { address },
+          properties: { address, principaladdresssiteoid: 555555 },
         },
       ],
     };
@@ -97,6 +97,7 @@ describe("Address Handler Unit Tests", () => {
     expect(body.suburbName).toBe("BATHURST");
     expect(body.stateElectoralDistrict).toBe("BATHURST");
     expect(body.propertyId).toBe(3973380);
+    expect(body.principalAddressSiteOid).toBe(555555);
     expect(body.query).toBe(address);
 
     // Verify all three API calls were made

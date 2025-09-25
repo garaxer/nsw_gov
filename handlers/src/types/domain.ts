@@ -94,4 +94,5 @@ export type LocationInfo = {
   suburbName: string;
   stateElectoralDistrict: string;
   propertyId: number;
+  principalAddressSiteOid: number;
 };

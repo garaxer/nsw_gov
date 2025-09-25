@@ -9,7 +9,10 @@ import { z } from "zod";
 const GeoFeatureSchema = z.object({
   id: z.number(),
   geometry: z.object({ coordinates: z.array(z.number()).min(2) }),
-  properties: z.object({ address: z.string() }),
+  properties: z.object({ 
+    address: z.string(),
+    principaladdresssiteoid: z.number(),
+  }),
 });
 export const GeocodeSchema = z.object({
   features: z.array(GeoFeatureSchema),

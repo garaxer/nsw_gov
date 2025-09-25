@@ -34,7 +34,7 @@ describe("AddressService", () => {
       {
         id: 12345,
         geometry: { coordinates: [149.567, -33.429] },
-        properties: { address: "346 PANORAMA AVENUE BATHURST" },
+        properties: { address: "346 PANORAMA AVENUE BATHURST", principaladdresssiteoid: 777777 },
       },
     ],
   };
@@ -74,6 +74,7 @@ describe("AddressService", () => {
         suburbName: "BATHURSTSuburb",
         stateElectoralDistrict: "BATHURST",
         propertyId: 12345,
+        principalAddressSiteOid: 777777,
       });
     });
   });
@@ -87,17 +88,17 @@ describe("AddressService", () => {
 
   describe("lookupAddress", () => {
     it.each([
-      ["346 PANORAMA AVENUE BATHURST", "BATHURST", "BATHURSTSuburb"],
-      ["1 MARTIN PLACE SYDNEY", "SYDNEY", "SYDNEYSuburb"],
+      ["346 PANORAMA AVENUE BATHURST", "BATHURST", "BATHURSTSuburb", 2222],
+      ["1 MARTIN PLACE SYDNEY", "SYDNEY", "SYDNEYSuburb", 3333],
     ])(
       "should lookup address successfully for %s",
-      async (address, district, suburb) => {
+      async (address, district, suburb, pasOid) => {
         const geocodeResponse = {
           features: [
             {
               id: 4,
               geometry: { coordinates: [149.567, -33.429] },
-              properties: { address },
+              properties: { address, principaladdresssiteoid: pasOid },
             },
           ],
         };
@@ -119,6 +120,7 @@ describe("AddressService", () => {
         const result = await lookupAddress(address);
         expect(result.address).toBe(address);
         expect(result.suburbName).toBe(suburb);
+        expect(result.principalAddressSiteOid).toBe(pasOid);
       }
     );
 

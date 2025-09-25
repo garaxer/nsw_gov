@@ -22,6 +22,7 @@ export const extractLocationData = (
   const [longitude, latitude] = feature.geometry.coordinates;
   const fullAddress = feature.properties.address;
   const propertyId = feature.id;
+  const principalAddressSiteOid = feature.properties.principaladdresssiteoid;
 
   const boundaryFeature = boundaryResponse.features[0];
   const districtName = boundaryFeature.properties.districtname;
@@ -36,6 +37,7 @@ export const extractLocationData = (
     suburbName,
     stateElectoralDistrict: districtName,
     propertyId,
+    principalAddressSiteOid,
   };
 };
 
