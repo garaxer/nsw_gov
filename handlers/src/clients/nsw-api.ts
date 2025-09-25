@@ -64,7 +64,7 @@ export const getGeocodedAddress = async (
   if (!parsed.features.length) {
     throw new NotFoundError(`No results found for address: ${address}`);
   }
-  return parsed as unknown as GeocodeResponse;
+  return parsed;
 };
 
 /** Administrative boundary (state electoral district) lookup */
@@ -91,7 +91,7 @@ export const getDistrictBoundary = async (
       `No administrative boundary found for coordinates: ${longitude}, ${latitude}`
     );
   }
-  return parsed as unknown as StateElectoralDistrictResponse;
+  return parsed;
 };
 
 /** Administrative suburb/locality lookup */

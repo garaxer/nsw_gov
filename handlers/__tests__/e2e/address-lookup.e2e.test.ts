@@ -74,7 +74,7 @@ describe("Address Lookup E2E", () => {
     expect(result.statusCode).toBe(400);
 
     const body = JSON.parse(result.body);
-    expect(body).toContain("Query parameter q is required");
+    expect(body.error).toContain("Query parameter q is required");
   });
 
   it("should return 404 for invalid address", async () => {
@@ -88,6 +88,6 @@ describe("Address Lookup E2E", () => {
     expect(result.statusCode).toBe(404);
 
     const body = JSON.parse(result.body) as ErrorResponse;
-    expect(body).toContain("No results found");
+    expect(body.error).toContain("No results found");
   });
 });
