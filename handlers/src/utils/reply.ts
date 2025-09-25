@@ -3,34 +3,35 @@ import { APIGatewayProxyResult } from "aws-lambda";
 export type LambdaResponseOptions = {
   headers?: Record<string, string>;
   corsEnabled?: boolean;
-}
+};
 
-class reply {
+class Reply {
   private static getDefaultHeaders(corsEnabled = true): Record<string, string> {
     const headers: Record<string, string> = {
-      'Content-Type': 'application/json',
+      "Content-Type": "application/json",
     };
 
     if (corsEnabled) {
-      headers['Access-Control-Allow-Origin'] = '*';
-      headers['Access-Control-Allow-Headers'] = 'Content-Type';
-      headers['Access-Control-Allow-Methods'] = 'GET, OPTIONS';
+      headers["Access-Control-Allow-Origin"] = "*";
+      headers["Access-Control-Allow-Headers"] = "Content-Type";
+      headers["Access-Control-Allow-Methods"] = "GET, OPTIONS";
     }
 
     return headers;
   }
 
-  static success<T>(data: T, statusCode: number = 200, options?: Partial<LambdaResponseOptions>): APIGatewayProxyResult {
+  static success<T>(
+    data: T,
+    statusCode: number = 200,
+    options?: Partial<LambdaResponseOptions>
+  ): APIGatewayProxyResult {
     return {
       statusCode,
       headers: {
         ...this.getDefaultHeaders(options?.corsEnabled),
         ...options?.headers,
       },
-      body: JSON.stringify({
-        success: true,
-        data,
-      }),
+      body: JSON.stringify(data),
     };
   }
 
@@ -45,29 +46,38 @@ class reply {
         ...this.getDefaultHeaders(options?.corsEnabled),
         ...options?.headers,
       },
-      body: JSON.stringify({
-        success: false,
-        error,
-      }),
+      body: JSON.stringify(error),
     };
   }
 
-  static badRequest(message: string, options?: Partial<LambdaResponseOptions>): APIGatewayProxyResult {
+  static badRequest(
+    message: string,
+    options?: Partial<LambdaResponseOptions>
+  ): APIGatewayProxyResult {
     return this.error(message, 400, options);
   }
 
-  static notFound(message: string, options?: Partial<LambdaResponseOptions>): APIGatewayProxyResult {
+  static notFound(
+    message: string,
+    options?: Partial<LambdaResponseOptions>
+  ): APIGatewayProxyResult {
     return this.error(message, 404, options);
   }
 
-  static internalServerError(message: string = 'Internal server error', options?: Partial<LambdaResponseOptions>): APIGatewayProxyResult {
+  static internalServerError(
+    message: string = "Internal server error",
+    options?: Partial<LambdaResponseOptions>
+  ): APIGatewayProxyResult {
     return this.error(message, 500, options);
   }
 
-  static fromError(error: Error & { code?: number }, options?: Partial<LambdaResponseOptions>): APIGatewayProxyResult {
+  static fromError(
+    error: Error & { code?: number },
+    options?: Partial<LambdaResponseOptions>
+  ): APIGatewayProxyResult {
     const statusCode = error.code || 500;
     return this.error(error.message, statusCode, options);
   }
 }
 
-export default reply
+export default Reply;

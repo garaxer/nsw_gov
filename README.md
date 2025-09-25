@@ -23,7 +23,6 @@ yarn dev "q=346 PANORAMA AVENUE BATHURST"
     "address": "346 PANORAMA AVENUE BATHURST",
     "suburbName": "BATHURST",
     "stateElectoralDistrict": "BATHURST",
-    "propertyId": 3973380
   }
 }
 ```
