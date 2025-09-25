@@ -10,7 +10,7 @@ import {
   getSuburbBoundary,
 } from "../clients/nsw-api";
 import logger from "../utils/logger";
-import { SuburbResponse } from "src/types/domain";
+import { SuburbResponse } from "../types/domain";
 
 /** Extracts location data from NSW API responses */
 export const extractLocationData = (

@@ -13,7 +13,7 @@ import {
   StateElectoralDistrictResponse,
   GeocodeResponse,
   SuburbResponse,
-} from "handlers/src/types/domain";
+} from "../src/types/domain";
 
 jest.mock("../src/clients/nsw-api");
 const mockGetGeocodedAddress = getGeocodedAddress as jest.MockedFunction<

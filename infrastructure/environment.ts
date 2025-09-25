@@ -8,10 +8,6 @@ export enum AwsEnvironment {
 const stackPropsDict: Record<AwsEnvironment, GovStackProps> = {
   [AwsEnvironment.Production]: {
     stageName: "prod",
-    env: {
-      account: undefined,
-      region: "ap-southeast-2",
-    },
   },
 };
 

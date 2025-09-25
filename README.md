@@ -27,6 +27,8 @@ npm run dev "q=346 PANORAMA AVENUE BATHURST"
   "address": "346 PANORAMA AVENUE BATHURST",
   "suburbName": "BATHURST",
   "stateElectoralDistrict": "BATHURST",
+  "propertyId": "123",
+  "query": "346 PANORAMA AVENUE BATHURST"
 }
 ```
 
@@ -59,6 +61,8 @@ npm run test
 ```
 
 ## Deployment
+
+Ensure you have logged into aws. Populate ACCOUNT_ID in your environment.
 
 ```bash
 cd infrastructure

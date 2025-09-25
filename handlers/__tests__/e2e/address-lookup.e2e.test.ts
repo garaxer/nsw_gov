@@ -1,4 +1,4 @@
-import { AddressLookupResponse, ErrorResponse } from "handlers/src/types/responses";
+import { AddressLookupResponse, ErrorResponse } from "../../src/types/responses";
 import { handler } from "../../lambdas/address";
 import {
   APIGatewayProxyEventV2,
@@ -19,7 +19,7 @@ const createEvent = (query?: string): APIGatewayProxyEventV2 => ({
     domainName: "",
     domainPrefix: "",
     http: {
-      method: "",
+      method: "GET",
       path: "",
       protocol: "",
       sourceIp: "",
@@ -45,7 +45,7 @@ describe("Address Lookup E2E", () => {
     ["1 MARTIN PLACE SYDNEY", "SYDNEY"],
   ])(
     "should handle full address lookup flow for %s",
-    async (address, expectedDistrict) => {
+    async (address, suburb) => {
       const event = createEvent(address);
       const result = (await handler(
         event,
@@ -59,7 +59,7 @@ describe("Address Lookup E2E", () => {
       expect(body.address).toContain(address.split(" ")[0]);
       expect(body.location.latitude).toBeDefined();
       expect(body.location.longitude).toBeDefined();
-      expect(body.suburbName).toBe(expectedDistrict);
+      expect(body.suburbName).toBe(suburb);
     }
   );
 
