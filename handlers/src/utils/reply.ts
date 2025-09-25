@@ -3,10 +3,18 @@ import { APIGatewayProxyResult } from "aws-lambda";
 export type LambdaResponseOptions = {
   headers?: Record<string, string>;
   corsEnabled?: boolean;
+  cacheMaxAge?: number; // Cache duration in seconds
 };
 
+/**
+ * Utility class for generating standardized API Gateway responses
+ * with support for CORS and caching headers.
+ */
 class Reply {
-  private static getDefaultHeaders(corsEnabled = true): Record<string, string> {
+  private static getDefaultHeaders(
+    corsEnabled = true,
+    cacheMaxAge?: number
+  ): Record<string, string> {
     const headers: Record<string, string> = {
       "Content-Type": "application/json",
     };
@@ -15,6 +23,12 @@ class Reply {
       headers["Access-Control-Allow-Origin"] = "*";
       headers["Access-Control-Allow-Headers"] = "Content-Type";
       headers["Access-Control-Allow-Methods"] = "GET, OPTIONS";
+    }
+
+    // Add caching headers if specified
+    if (cacheMaxAge) {
+      headers["Cache-Control"] = `public, max-age=${cacheMaxAge}, s-maxage=${cacheMaxAge}`;
+      headers["Expires"] = new Date(Date.now() + cacheMaxAge * 1000).toUTCString();
     }
 
     return headers;
@@ -28,7 +42,7 @@ class Reply {
     return {
       statusCode,
       headers: {
-        ...this.getDefaultHeaders(options?.corsEnabled),
+        ...this.getDefaultHeaders(options?.corsEnabled, options?.cacheMaxAge),
         ...options?.headers,
       },
       body: JSON.stringify(data),

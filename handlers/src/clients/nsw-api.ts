@@ -5,6 +5,12 @@ import {
 } from "../types/domain";
 import { InternalServerError, NotFoundError } from "../errors/http";
 
+/** Fetches geocoded address data from NSW API 
+ * @param address - The address to geocode, e.g., "346 PANORAMA AVENUE BATHURST"
+ * @returns GeocodeResponse containing features with coordinates and address properties
+ * @throws NotFoundError if no results are found
+ * @throws InternalServerError for API errors
+ */
 export const getGeocodedAddress = async (
   address: string
 ): Promise<GeocodeResponse> => {
@@ -29,6 +35,13 @@ export const getGeocodedAddress = async (
   return data;
 };
 
+/** Fetches administrative boundary data from NSW API using coordinates
+ * @param longitude - The longitude coordinate
+ * @param latitude - The latitude coordinate
+ * @returns AdministrativeBoundaryResponse containing features with district properties
+ * @throws NotFoundError if no boundaries are found for the coordinates
+ * @throws InternalServerError for API errors
+ */
 export const getAdministrativeBoundary = async (
   longitude: number,
   latitude: number

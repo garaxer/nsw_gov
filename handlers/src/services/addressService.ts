@@ -9,6 +9,7 @@ import {
   getAdministrativeBoundary,
 } from "../clients/nsw-api";
 
+/** Extracts location data from NSW API responses */
 export const extractLocationData = (
   geocodeResponse: GeocodeResponse,
   boundaryResponse: AdministrativeBoundaryResponse
@@ -29,6 +30,7 @@ export const extractLocationData = (
   };
 };
 
+/** Extracts coordinates from geocode response */
 export const getLatLong = (
   geoCodeResponse: GeocodeResponse
 ): [number, number] => {
@@ -36,6 +38,7 @@ export const getLatLong = (
   return feature.geometry.coordinates;
 };
 
+/** Main address lookup function - coordinates geocoding and boundary lookup */
 export const lookupAddress = async (address: string): Promise<LocationInfo> => {
   try {
     console.log("Starting address lookup for:", address);

@@ -1,9 +1,11 @@
 import "dotenv/config";
 import { APIGatewayProxyHandlerV2, APIGatewayProxyResult } from "aws-lambda";
 import Reply from "../src/utils/reply";
-import { lookupAddress } from "handlers/src/services/addressService";
+import { lookupAddress } from "../src/services/addressService";
 import { AddressLookupResponse } from "handlers/src/types/responses";
+import config from "handlers/src/config";
 
+/** Lambda handler for NSW address lookup */
 export const handler: APIGatewayProxyHandlerV2<APIGatewayProxyResult> = async (
   event
 ) => {
@@ -22,16 +24,20 @@ export const handler: APIGatewayProxyHandlerV2<APIGatewayProxyResult> = async (
   try {
     const result = await lookupAddress(query.trim());
 
-    return Reply.success<AddressLookupResponse>({
-      location: {
-        latitude: result.latitude,
-        longitude: result.longitude,
+    return Reply.success<AddressLookupResponse>(
+      {
+        location: {
+          latitude: result.latitude,
+          longitude: result.longitude,
+        },
+        address: result.address,
+        suburbName: result.suburbName,
+        stateElectoralDistrict: result.stateElectoralDistrict,
+        query: query,
       },
-      address: result.address,
-      suburbName: result.suburbName,
-      stateElectoralDistrict: result.stateElectoralDistrict,
-      query: query,
-    });
+      200,
+      { cacheMaxAge: config.cacheMaxAge }
+    );
   } catch (error) {
     return Reply.fromError(error as Error & { code?: number });
   }

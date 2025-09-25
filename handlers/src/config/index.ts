@@ -1,5 +1,6 @@
 const config = {
   stage: process.env.STAGE ?? "dev",
+  cacheMaxAge: 300, // Cache duration in seconds (5 minutes)
   apis: {
     nsw: {
       geocoding: {
