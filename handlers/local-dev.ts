@@ -17,22 +17,22 @@ const createMockEvent = (
     'user-agent': 'local-dev',
   },
   requestContext: {
-    accountId: '123456789012',
-    apiId: 'local-dev',
-    domainName: 'localhost',
-    domainPrefix: 'localhost',
-    http: {
-      method,
-      path,
-      protocol: 'HTTP/1.1',
-      sourceIp: '127.0.0.1',
-      userAgent: 'local-dev',
-    },
-    requestId: `local-${Date.now()}`,
-    routeKey: '$default',
-    stage: 'local',
-    time: new Date().toISOString(),
-    timeEpoch: Date.now(),
+      accountId: '',
+      apiId: '',
+      domainName: '',
+      domainPrefix: '',
+      http: {
+          method,
+          path: '',
+          protocol: '',
+          sourceIp: '',
+          userAgent: ''
+      },
+      requestId: '',
+      routeKey: '',
+      stage: '',
+      time: '',
+      timeEpoch: 0
   },
   body: body ? JSON.stringify(body) : undefined,
   isBase64Encoded: false,
@@ -46,10 +46,8 @@ function parseArgs() {
   
   // If no args, show usage
   if (args.length === 0) {
-    console.log('🔍 Usage examples:');
-    console.log('  yarn dev "q=Circular Quay&format=json"');
-    console.log('  yarn dev (will show missing parameter error)');
-    console.log('');
+    console.log('Usage examples:');
+    console.log('  yarn dev "q=346 PANORAMA AVENUE BATHURST"');
   }
   
   const queryString = args[0] || '';
@@ -73,31 +71,26 @@ function parseArgs() {
 // Main function to run the handler
 async function runLocal() {
   try {
-    console.log('🚀 Running Address Lambda function locally...\n');
+    console.log('Running Address Lambda function locally...\n');
     
     const { path, method, queryParams } = parseArgs();
     
     // Create a mock event
     const event = createMockEvent(path, method, undefined, queryParams);
     
-    console.log('📝 Query Parameters:', queryParams);
+    console.log('Query Parameters:', queryParams);
     console.log('\n' + '='.repeat(50) + '\n');
     
     // Call the handler
     const result = await handler(event, {} as any, {} as any);
     
-    console.log('✅ Lambda Response:');
+    console.log('Lambda Response:');
     console.log(JSON.stringify(result, null, 2));
     
   } catch (error) {
-    console.error('❌ Error running Lambda:', error);
+    console.error('Error running Lambda:', error);
     process.exit(1);
   }
 }
 
-// Run if called directly
-if (require.main === module) {
-  runLocal();
-}
-
-export { runLocal, createMockEvent };
+runLocal();
