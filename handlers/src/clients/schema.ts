@@ -1,3 +1,4 @@
+import { BadGatewayError } from "../errors/http";
 import {
   StateElectoralDistrictResponse,
   SuburbResponse,
@@ -37,7 +38,7 @@ export const parseSuburbSchema = (data: unknown) => {
     return SuburbSchema.parse(data) as unknown as SuburbResponse;
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      throw new Error(`Suburb response validation error: ${error.message}`);
+      throw new BadGatewayError(`Suburb response validation error: ${error.message}`);
     }
     throw error;
   }
@@ -48,7 +49,7 @@ export const parseGeocodeSchema = (data: unknown) => {
     return GeocodeSchema.parse(data) as unknown as GeocodeResponse;
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      throw new Error(`Geocode response validation error: ${error.message}`);
+      throw new BadGatewayError(`Geocode response validation error: ${error.message}`);
     }
     throw error;
   }
@@ -61,7 +62,7 @@ export const parseElectoralSchema = (data: unknown) => {
     ) as unknown as StateElectoralDistrictResponse;
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      throw new Error(`Electoral response validation error: ${error.message}`);
+      throw new BadGatewayError(`Electoral response validation error: ${error.message}`);
     }
     throw error;
   }

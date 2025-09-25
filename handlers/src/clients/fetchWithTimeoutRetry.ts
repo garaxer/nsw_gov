@@ -48,9 +48,15 @@ const fetchWithTimeoutRetry = async (
       } as Parameters<typeof fetch>[1]);
       clearTimeout(timer); // Clear the timeout once fetch completes
 
-      // If response status is 429 (Too Many Requests) and retries remain
-      if (response.status === 429 && attempt <= retryAttempts) {
-        logger.warn("HTTP 429 received, retrying once", { url, attempt }); // Log warning about retry
+      // If response status is 429 (Too Many Requests) or 500 (Internal Server Error) and retries remain
+      if (
+        (response.status === 429 || response.status === 500) &&
+        attempt <= retryAttempts
+      ) {
+        logger.warn(`HTTP ${response.status} received, retrying once`, {
+          url,
+          attempt,
+        }); // Log warning about retry
         await new Promise((r) => setTimeout(r, 300)); // Wait 300ms before retrying
         continue; // Retry the request
       }

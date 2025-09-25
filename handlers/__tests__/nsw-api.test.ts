@@ -34,7 +34,9 @@ describe("NSW API Client", () => {
         const result = await getGeocodedAddress(address);
         expect(result.features).toHaveLength(1);
         expect(result.features[0].properties.address).toBe(address);
-        expect(result.features[0].properties.principaladdresssiteoid).toBe(999999);
+        expect(result.features[0].properties.principaladdresssiteoid).toBe(
+          999999
+        );
       }
     );
 
@@ -52,7 +54,7 @@ describe("NSW API Client", () => {
     it("should throw InternalServerError on API failure", async () => {
       mockFetch.mockResolvedValueOnce({
         ok: false,
-        status: 500,
+        status: 501,
         statusText: "Internal Server Error",
       } as unknown as Promise<Response>);
 
@@ -74,8 +76,15 @@ describe("NSW API Client", () => {
       };
 
       mockFetch
-        .mockResolvedValueOnce({ ok: false, status: 429, statusText: "Too Many Requests" } as unknown as Promise<Response>)
-        .mockResolvedValueOnce({ ok: true, json: jest.fn().mockResolvedValue(mockOk) } as unknown as Promise<Response>);
+        .mockResolvedValueOnce({
+          ok: false,
+          status: 429,
+          statusText: "Too Many Requests",
+        } as unknown as Promise<Response>)
+        .mockResolvedValueOnce({
+          ok: true,
+          json: jest.fn().mockResolvedValue(mockOk),
+        } as unknown as Promise<Response>);
 
       const result = await getGeocodedAddress(address);
       expect(result.features[0].properties.principaladdresssiteoid).toBe(111);
@@ -110,9 +119,7 @@ describe("NSW API Client", () => {
         json: jest.fn().mockResolvedValue({ features: [] }),
       } as unknown as Promise<Response>);
 
-      await expect(getDistrictBoundary(0, 0)).rejects.toThrow(
-        NotFoundError
-      );
+      await expect(getDistrictBoundary(0, 0)).rejects.toThrow(NotFoundError);
     });
   });
 });

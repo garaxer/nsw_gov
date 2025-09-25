@@ -7,6 +7,10 @@ import config from "../src/config";
 
 /** Lambda handler for NSW address lookup */
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
+  if (event.requestContext?.http?.method === "OPTIONS") {
+    return Reply.success("OK", 200);
+  }
+
   const queryParams = event.queryStringParameters ?? {};
   const query = queryParams.q ?? queryParams.query ?? queryParams.address ?? "";
 
