@@ -2,6 +2,9 @@
 
 Serverless function for NSW address lookup using government spatial APIs. Returns coordinates, suburb, and electoral district information.
 
+Test it out [20 martin place](https://tehc5tz6eri6y7vnye7hym7u6a0vrgcp.lambda-url.ap-southeast-2.on.aws/?q=1%20MARTIN%20PLACE%20SYDNEY)
+
+
 ## Requirements
 1. Node 22
 

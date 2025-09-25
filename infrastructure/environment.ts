@@ -9,7 +9,7 @@ const stackPropsDict: Record<AwsEnvironment, GovStackProps> = {
   [AwsEnvironment.Production]: {
     stageName: "prod",
     env: {
-      account: "447259991240",
+      account: undefined,
       region: "ap-southeast-2",
     },
   },
