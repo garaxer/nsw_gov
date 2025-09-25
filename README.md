@@ -18,18 +18,15 @@ npm run dev "q=346 PANORAMA AVENUE BATHURST"
 
 ## API Usage
 
-**Request:** `GET /?q=346 PANORAMA AVENUE BATHURST`
+**Request:** `GET https://tehc5tz6eri6y7vnye7hym7u6a0vrgcp.lambda-url.ap-southeast-2.on.aws?q=346 PANORAMA AVENUE BATHURST`
 
 **Response:**
 ```json
 {
-  "success": true,
-  "data": {
-    "location": { "latitude": -33.429, "longitude": 149.567 },
-    "address": "346 PANORAMA AVENUE BATHURST",
-    "suburbName": "BATHURST",
-    "stateElectoralDistrict": "BATHURST",
-  }
+  "location": { "latitude": -33.429, "longitude": 149.567 },
+  "address": "346 PANORAMA AVENUE BATHURST",
+  "suburbName": "BATHURST",
+  "stateElectoralDistrict": "BATHURST",
 }
 ```
 
@@ -37,16 +34,15 @@ npm run dev "q=346 PANORAMA AVENUE BATHURST"
 
 ```mermaid
 graph LR
-    A[Client Request] --> B[Lambda Function URL]
-    B --> C[Address Controller]
-    C --> D[Address Service]
-    D --> E[NSW Geocoding API]
-    D --> F[NSW Boundaries API]
-    E --> G[Coordinates]
-    F --> H[District Info]
-    G --> I[Combined Response]
-    H --> I
-    I --> A
+  A[Client Request] --> B[Lambda Function URL]
+  B --> C[Address Service]
+  C --> D[NSW Geocoding API]
+  D --> E[Coordinates]
+  E --> F[NSW Boundaries API]
+  F --> G[District Info]
+  E --> H[Combined Response]
+  G --> H
+  H --> A
 ```
 
 ## Local Development
