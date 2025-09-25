@@ -1,7 +1,7 @@
 import "dotenv/config";
 import { APIGatewayProxyHandlerV2, APIGatewayProxyResult } from "aws-lambda";
 import Reply from "../src/utils/reply";
-import { lookupAddress } from "handlers/src/services/address";
+import { lookupAddress } from "handlers/src/services/addressService";
 import { AddressLookupResponse } from "handlers/src/types/responses";
 
 export const handler: APIGatewayProxyHandlerV2<APIGatewayProxyResult> = async (

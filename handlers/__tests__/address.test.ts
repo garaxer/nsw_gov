@@ -1,4 +1,4 @@
-import { AddressService } from '../src/services/address';
+import { AddressService } from '../src/services/addressService';
 
 // Mock fetch globally
 global.fetch = jest.fn();
