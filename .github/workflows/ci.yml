@@ -25,7 +25,6 @@ jobs:
       - name: Install dependencies
         run: |
           npm install
-          cd handlers && npm install
 
       - name: Lint
         run: cd handlers && npm run lint

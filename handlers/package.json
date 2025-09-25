@@ -2,7 +2,6 @@
   "name": "handlers",
   "version": "0.1.0",
   "scripts": {
-    "start": "ts-node index.ts",
     "build": "tsc",
     "test": "jest --testPathIgnorePatterns=e2e",
     "test:e2e": "jest e2e",
