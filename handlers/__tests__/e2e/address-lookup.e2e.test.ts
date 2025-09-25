@@ -57,8 +57,8 @@ describe("Address Lookup E2E", () => {
 
       const body = JSON.parse(result.body) as AddressLookupResponse;
       expect(body.address).toContain(address.split(" ")[0]);
-      expect(body.location.latitude).toBeDefined();
-      expect(body.location.longitude).toBeDefined();
+      expect(body.latitude).toBeDefined();
+      expect(body.longitude).toBeDefined();
       expect(body.suburbName).toBe(suburb);
     }
   );

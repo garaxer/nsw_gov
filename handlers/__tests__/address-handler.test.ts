@@ -92,8 +92,8 @@ describe("Address Handler Unit Tests", () => {
     const body = JSON.parse(result.body) as AddressLookupResponse;
     console.log({ body });
     expect(body.address).toBe(address);
-    expect(body.location.latitude).toBe(-33.4296842928957);
-    expect(body.location.longitude).toBe(149.56705027262);
+    expect(body.latitude).toBe(-33.4296842928957);
+    expect(body.longitude).toBe(149.56705027262);
     expect(body.suburbName).toBe("BATHURST");
     expect(body.stateElectoralDistrict).toBe("BATHURST");
     expect(body.propertyId).toBe(3973380);
