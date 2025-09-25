@@ -1,3 +1,4 @@
+import { AddressLookupResponse, ErrorResponse } from "handlers/src/types/responses";
 import { handler } from "../../lambdas/address";
 import {
   APIGatewayProxyEventV2,
@@ -13,22 +14,22 @@ const createEvent = (query?: string): APIGatewayProxyEventV2 => ({
   rawQueryString: query ? `q=${encodeURIComponent(query)}` : "",
   headers: { "content-type": "application/json" },
   requestContext: {
-    accountId: "123456789012",
-    apiId: "test-api",
-    domainName: "localhost",
-    domainPrefix: "localhost",
+    accountId: "",
+    apiId: "",
+    domainName: "",
+    domainPrefix: "",
     http: {
-      method: "GET",
-      path: "/",
-      protocol: "HTTP/1.1",
-      sourceIp: "127.0.0.1",
-      userAgent: "test-agent",
+      method: "",
+      path: "",
+      protocol: "",
+      sourceIp: "",
+      userAgent: ""
     },
-    requestId: "test-request",
-    routeKey: "$default",
-    stage: "test",
-    time: new Date().toISOString(),
-    timeEpoch: Date.now(),
+    requestId: "",
+    routeKey: "",
+    stage: "",
+    time: "",
+    timeEpoch: 0
   },
   body: undefined,
   isBase64Encoded: false,
@@ -54,12 +55,11 @@ describe("Address Lookup E2E", () => {
 
       expect(result.statusCode).toBe(200);
 
-      const body = JSON.parse(result.body);
-      expect(body.success).toBe(true);
-      expect(body.data.address).toContain(address.split(" ")[0]);
-      expect(body.data.location.latitude).toBeDefined();
-      expect(body.data.location.longitude).toBeDefined();
-      expect(body.data.suburbName).toBe(expectedDistrict);
+      const body = JSON.parse(result.body) as AddressLookupResponse;
+      expect(body.address).toContain(address.split(" ")[0]);
+      expect(body.location.latitude).toBeDefined();
+      expect(body.location.longitude).toBeDefined();
+      expect(body.suburbName).toBe(expectedDistrict);
     }
   );
 
@@ -74,8 +74,7 @@ describe("Address Lookup E2E", () => {
     expect(result.statusCode).toBe(400);
 
     const body = JSON.parse(result.body);
-    expect(body.success).toBe(false);
-    expect(body.error).toContain("Missing required parameter");
+    expect(body).toContain("Query parameter q is required");
   });
 
   it("should return 404 for invalid address", async () => {
@@ -88,8 +87,7 @@ describe("Address Lookup E2E", () => {
 
     expect(result.statusCode).toBe(404);
 
-    const body = JSON.parse(result.body);
-    expect(body.success).toBe(false);
-    expect(body.error).toContain("No results found");
+    const body = JSON.parse(result.body) as ErrorResponse;
+    expect(body).toContain("No results found");
   });
 });
