@@ -49,6 +49,17 @@ class Reply {
     };
   }
 
+  static noContent(options?: Partial<LambdaResponseOptions>): APIGatewayProxyResult {
+    return {
+      statusCode: 204,
+      headers: {
+        ...this.getDefaultHeaders(options?.corsEnabled, options?.cacheMaxAge),
+        ...options?.headers,
+      },
+      body: "",
+    };
+  }
+
   static error(
     error: string,
     statusCode: number = 500,
@@ -60,7 +71,7 @@ class Reply {
         ...this.getDefaultHeaders(options?.corsEnabled),
         ...options?.headers,
       },
-      body: JSON.stringify(error),
+      body: JSON.stringify({ error }),
     };
   }
 

@@ -1,6 +1,6 @@
 import {
   getGeocodedAddress,
-  getAdministrativeBoundary,
+  getDistrictBoundary,
 } from "../src/clients/nsw-api";
 import { NotFoundError, InternalServerError } from "../src/errors/http";
 
@@ -19,6 +19,7 @@ describe("NSW API Client", () => {
         const mockResponse = {
           features: [
             {
+              id: 12345,
               geometry: { coordinates: [149.567, -33.429] },
               properties: { address },
             },
@@ -60,7 +61,7 @@ describe("NSW API Client", () => {
     });
   });
 
-  describe("getAdministrativeBoundary", () => {
+  describe("getDistrictBoundary", () => {
     it.each([
       [149.567, -33.429, "BATHURST"],
       [151.209, -33.867, "SYDNEY"],
@@ -76,7 +77,7 @@ describe("NSW API Client", () => {
           json: jest.fn().mockResolvedValue(mockResponse),
         } as unknown as Promise<Response>);
 
-        const result = await getAdministrativeBoundary(lng, lat);
+        const result = await getDistrictBoundary(lng, lat);
         expect(result.features[0].properties.districtname).toBe(district);
       }
     );
@@ -87,7 +88,7 @@ describe("NSW API Client", () => {
         json: jest.fn().mockResolvedValue({ features: [] }),
       } as unknown as Promise<Response>);
 
-      await expect(getAdministrativeBoundary(0, 0)).rejects.toThrow(
+      await expect(getDistrictBoundary(0, 0)).rejects.toThrow(
         NotFoundError
       );
     });

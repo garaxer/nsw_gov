@@ -3,9 +3,15 @@
     "files": true
   },
   "extends": "../tsconfig.json",
-  "include": ["lambdas/**/*", "../global.d.ts", "index.ts"],
+  "include": [
+    "lambdas/**/*",
+    "src/**/*",
+    "../global.d.ts",
+    "index.ts"
+  ],
   "compilerOptions": {
     "outDir": "dist",
-    "noEmit": false
+    "noEmit": false,
+    "baseUrl": ".",
   }
 }

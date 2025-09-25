@@ -30,6 +30,7 @@
     "@aws-lambda-powertools/logger": "^2.27.0",
     "@types/uuid": "^11.0.0",
     "aws-lambda": "^1.0.7",
-    "dotenv": "^17.2.2"
+    "dotenv": "^17.2.2",
+    "zod": "^4.1.11"
   }
 }

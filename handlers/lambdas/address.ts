@@ -2,13 +2,18 @@ import "dotenv/config";
 import { APIGatewayProxyHandlerV2, APIGatewayProxyResult } from "aws-lambda";
 import Reply from "../src/utils/reply";
 import { lookupAddress } from "../src/services/addressService";
-import { AddressLookupResponse } from "handlers/src/types/responses";
-import config from "handlers/src/config";
+import { AddressLookupResponse } from "../src/types/responses";
+import config from "../src/config";
 
 /** Lambda handler for NSW address lookup */
 export const handler: APIGatewayProxyHandlerV2<APIGatewayProxyResult> = async (
   event
 ) => {
+  // Preflight CORS
+  if (event.requestContext.http?.method === "OPTIONS") {
+    return Reply.noContent({ corsEnabled: true, cacheMaxAge: 0 });
+  }
+
   const queryParams = event.queryStringParameters ?? {};
   const query = queryParams.q ?? queryParams.query ?? queryParams.address ?? "";
 
@@ -33,6 +38,7 @@ export const handler: APIGatewayProxyHandlerV2<APIGatewayProxyResult> = async (
         address: result.address,
         suburbName: result.suburbName,
         stateElectoralDistrict: result.stateElectoralDistrict,
+        propertyId: result.propertyId,
         query: query,
       },
       200,

@@ -6,6 +6,7 @@ export type AddressLookupResponse = {
   address: string;
   suburbName: string;
   stateElectoralDistrict: string;
+  propertyId: number;
   query: string;
 };
 

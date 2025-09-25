@@ -1,69 +1,122 @@
 import config from "../config";
+import logger from "../utils/logger";
 import {
   GeocodeResponse,
-  AdministrativeBoundaryResponse,
+  StateElectoralDistrictResponse,
+  SuburbResponse,
 } from "../types/domain";
-import { InternalServerError, NotFoundError } from "../errors/http";
+import { NotFoundError, InternalServerError } from "../errors/http";
+import {
+  parseElectoralSchema,
+  parseGeocodeSchema,
+  parseSuburbSchema,
+} from "./schema";
+
+/** Builds the geocoding URL for a given address 
+ * e.g. https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Geocoded_Addressing_Theme/FeatureServer/1/query?where=address+%3D+%27346%20PANORAMA%20AVENUE%20BATHURST%27&outFields=*&f=geojson
+*/
+const buildGeocodeUrl = (address: string) => {
+  const where = `address = '${address.toUpperCase()}'`;
+  const qs = new URLSearchParams({ where, outFields: "*", f: "geojson" });
+  return `${config.apis.nsw.geocoding.baseUrl}?${qs.toString()}`;
+};
+
+/** Builds the point query URL for given coordinates
+ * e.g. https://portal.spatial.nsw.gov.au/server/rest/services/NSW_Administrative_Boundaries_Theme/FeatureServer/4/query?geometry=149.56705027261992%2C+-33.42968429289573&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=*&returnGeometry=false&f=geoJSON
+*/
+const buildPointQueryUrl = (
+  baseUrl: string,
+  longitude: number,
+  latitude: number
+) => {
+  const geometry = `${longitude}, ${latitude}`;
+  const qs = new URLSearchParams({
+    geometry,
+    geometryType: "esriGeometryPoint",
+    inSR: "4326",
+    spatialRel: "esriSpatialRelIntersects",
+    outFields: "*",
+    returnGeometry: "false",
+    f: "geoJSON",
+  });
+  return `${baseUrl}?${qs.toString()}`;
+};
 
 /** Fetches geocoded address data from NSW API 
  * @param address - The address to geocode, e.g., "346 PANORAMA AVENUE BATHURST"
  * @returns GeocodeResponse containing features with coordinates and address properties
  * @throws NotFoundError if no results are found
  * @throws InternalServerError for API errors
- */
+*/
 export const getGeocodedAddress = async (
   address: string
 ): Promise<GeocodeResponse> => {
-  const encodedAddress = encodeURIComponent(address.toUpperCase());
-  const url = `${config.apis.nsw.geocoding.baseUrl}?where=address+%3D+%27${encodedAddress}%27&outFields=*&f=geojson`;
-
-  console.log("Geocoding request URL:", url);
-
+  const url = buildGeocodeUrl(address);
+  logger.debug("Geocoding request URL", { url });
   const response = await fetch(url);
   if (!response.ok) {
     throw new InternalServerError(
       `Geocoding API error: ${response.status} ${response.statusText}`
     );
   }
-
-  const data = (await response.json()) as GeocodeResponse;
-
-  if (!data.features || data.features.length === 0) {
+  const json = await response.json();
+  const parsed = parseGeocodeSchema(json);
+  if (!parsed.features.length) {
     throw new NotFoundError(`No results found for address: ${address}`);
   }
-
-  return data;
+  return parsed as unknown as GeocodeResponse;
 };
 
-/** Fetches administrative boundary data from NSW API using coordinates
- * @param longitude - The longitude coordinate
- * @param latitude - The latitude coordinate
- * @returns AdministrativeBoundaryResponse containing features with district properties
- * @throws NotFoundError if no boundaries are found for the coordinates
- * @throws InternalServerError for API errors
- */
-export const getAdministrativeBoundary = async (
+/** Administrative boundary (state electoral district) lookup */
+export const getDistrictBoundary = async (
   longitude: number,
   latitude: number
-): Promise<AdministrativeBoundaryResponse> => {
-  const url = `${config.apis.nsw.boundaries.baseUrl}?geometry=${longitude}%2C+${latitude}&geometryType=esriGeometryPoint&inSR=4326&spatialRel=esriSpatialRelIntersects&outFields=*&returnGeometry=false&f=geoJSON`;
-
-  console.log("Administrative boundary request URL:", url);
-
+): Promise<StateElectoralDistrictResponse> => {
+  const url = buildPointQueryUrl(
+    config.apis.nsw.boundariesStateElectoralDistrict.baseUrl,
+    longitude,
+    latitude
+  );
+  logger.debug("Boundary request URL", { url });
   const response = await fetch(url);
   if (!response.ok) {
     throw new InternalServerError(
-      `Administrative boundary API error: ${response.status} ${response.statusText}`
+      `Boundary API error: ${response.status} ${response.statusText}`
     );
   }
-
-  const data = await response.json();
-
-  if (!data.features || data.features.length === 0) {
+  const json = await response.json();
+  const parsed = parseElectoralSchema(json);
+  if (!parsed.features.length) {
     throw new NotFoundError(
       `No administrative boundary found for coordinates: ${longitude}, ${latitude}`
     );
   }
+  return parsed as unknown as StateElectoralDistrictResponse;
+};
 
-  return data;
+/** Administrative suburb/locality lookup */
+export const getSuburbBoundary = async (
+  longitude: number,
+  latitude: number
+): Promise<SuburbResponse> => {
+  const url = buildPointQueryUrl(
+    config.apis.nsw.boundariesSuburb.baseUrl,
+    longitude,
+    latitude
+  );
+  logger.debug("Suburb request URL", { url });
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new InternalServerError(
+      `Suburb API error: ${response.status} ${response.statusText}`
+    );
+  }
+  const json = await response.json();
+  const parsed = parseSuburbSchema(json);
+  if (!parsed.features.length) {
+    throw new NotFoundError(
+      `No suburb found for coordinates: ${longitude}, ${latitude}`
+    );
+  }
+  return parsed;
 };

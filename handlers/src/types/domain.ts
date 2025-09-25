@@ -5,7 +5,7 @@ export type GeocodeResponse = {
         id: number;
         geometry: {
             type: "Point";
-            coordinates: [number, number]; // [longitude, latitude]
+            coordinates: number[]; // [longitude, latitude, ...]
         };
         properties: {
             rid: number;
@@ -31,7 +31,7 @@ export type GeocodeResponse = {
     }>;
 };
 
-export type AdministrativeBoundaryResponse = {
+export type StateElectoralDistrictResponse = {
     type: "FeatureCollection";
     features: Array<{
         type: "Feature";
@@ -58,10 +58,40 @@ export type AdministrativeBoundaryResponse = {
     }>;
 };
 
+export type SuburbResponse = {
+    type: "FeatureCollection";
+    features: Array<{
+        type: "Feature";
+        id: number;
+        geometry: null;
+        properties: {
+            rid: number;
+            cadid: number;
+            createdate: number;
+            modifieddate: number;
+            suburbname: string;
+            postcode: number;
+            state: number;
+            startdate: number;
+            enddate: number;
+            lastupdate: number;
+            msoid: number;
+            centroidid: number | null;
+            shapeuuid: string;
+            changetype: string;
+            processstate: number | null;
+            urbanity: string;
+            Shape__Length: number;
+            Shape__Area: number;
+        };
+    }>;
+};
+
 export type LocationInfo = {
   latitude: number;
   longitude: number;
   address: string;
   suburbName: string;
   stateElectoralDistrict: string;
+  propertyId: number;
 };

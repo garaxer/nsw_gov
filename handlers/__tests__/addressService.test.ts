@@ -1,75 +1,133 @@
-import { extractLocationData, getLatLong, lookupAddress } from '../src/services/addressService';
-import { getGeocodedAddress, getAdministrativeBoundary } from '../src/clients/nsw-api';
-import { InternalServerError } from '../src/errors/http';
-import { AdministrativeBoundaryResponse, GeocodeResponse } from 'handlers/src/types/domain';
+import {
+  extractLocationData,
+  getLatLong,
+  lookupAddress,
+} from "../src/services/addressService";
+import {
+  getGeocodedAddress,
+  getDistrictBoundary,
+  getSuburbBoundary,
+} from "../src/clients/nsw-api";
+import { InternalServerError } from "../src/errors/http";
+import {
+  StateElectoralDistrictResponse,
+  GeocodeResponse,
+  SuburbResponse,
+} from "handlers/src/types/domain";
 
-jest.mock('../src/clients/nsw-api');
-const mockGetGeocodedAddress = getGeocodedAddress as jest.MockedFunction<typeof getGeocodedAddress>;
-const mockGetAdministrativeBoundary = getAdministrativeBoundary as jest.MockedFunction<typeof getAdministrativeBoundary>;
+jest.mock("../src/clients/nsw-api");
+const mockGetGeocodedAddress = getGeocodedAddress as jest.MockedFunction<
+  typeof getGeocodedAddress
+>;
+const mockGetDistrictBoundary =
+  getDistrictBoundary as jest.MockedFunction<
+    typeof getDistrictBoundary
+  >;
+const mockGetSuburbBoundary =
+  getSuburbBoundary as jest.MockedFunction<
+    typeof getSuburbBoundary
+  >;
 
-describe('AddressService', () => {
+describe("AddressService", () => {
   const mockGeocodeResponse = {
-    features: [{
-      geometry: { coordinates: [149.567, -33.429] },
-      properties: { address: '346 PANORAMA AVENUE BATHURST' }
-    }]
+    features: [
+      {
+        id: 12345,
+        geometry: { coordinates: [149.567, -33.429] },
+        properties: { address: "346 PANORAMA AVENUE BATHURST" },
+      },
+    ],
   };
 
   const mockBoundaryResponse = {
-    features: [{
-      properties: { districtname: 'BATHURST' }
-    }]
+    features: [
+      {
+        properties: { districtname: "BATHURST" },
+      },
+    ],
+  };
+
+  const mockSuburbResponse = {
+    features: [
+      {
+        properties: { suburbname: "BATHURSTSuburb" },
+      },
+    ],
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  describe('extractLocationData', () => {
-    it('should extract location data correctly', () => {
-      const result = extractLocationData(mockGeocodeResponse as GeocodeResponse, mockBoundaryResponse as AdministrativeBoundaryResponse);
-      
+  describe("extractLocationData", () => {
+    it("should extract location data correctly", () => {
+      const result = extractLocationData(
+        mockGeocodeResponse as GeocodeResponse,
+        mockBoundaryResponse as StateElectoralDistrictResponse,
+        mockSuburbResponse as SuburbResponse
+      );
+
       expect(result).toEqual({
         latitude: -33.429,
         longitude: 149.567,
-        address: '346 PANORAMA AVENUE BATHURST',
-        suburbName: 'BATHURST',
-        stateElectoralDistrict: 'BATHURST'
+        address: "346 PANORAMA AVENUE BATHURST",
+        suburbName: "BATHURSTSuburb",
+        stateElectoralDistrict: "BATHURST",
+        propertyId: 12345,
       });
     });
   });
 
-  describe('getLatLong', () => {
-    it('should return coordinates tuple', () => {
+  describe("getLatLong", () => {
+    it("should return coordinates tuple", () => {
       const result = getLatLong(mockGeocodeResponse as GeocodeResponse);
       expect(result).toEqual([149.567, -33.429]);
     });
   });
 
-  describe('lookupAddress', () => {
+  describe("lookupAddress", () => {
     it.each([
-      ['346 PANORAMA AVENUE BATHURST', 'BATHURST'],
-      ['1 MARTIN PLACE SYDNEY', 'SYDNEY']
-    ])('should lookup address successfully for %s', async (address, district) => {
-      const geocodeResponse = {
-        features: [{ geometry: { coordinates: [149.567, -33.429] }, properties: { address } }]
-      };
-      const boundaryResponse = {
-        features: [{ properties: { districtname: district } }]
-      };
+      ["346 PANORAMA AVENUE BATHURST", "BATHURST", "BATHURSTSuburb"],
+      ["1 MARTIN PLACE SYDNEY", "SYDNEY", "SYDNEYSuburb"],
+    ])(
+      "should lookup address successfully for %s",
+      async (address, district, suburb) => {
+        const geocodeResponse = {
+          features: [
+            {
+              id: 4,
+              geometry: { coordinates: [149.567, -33.429] },
+              properties: { address },
+            },
+          ],
+        };
+        const boundaryResponse = {
+          features: [{ properties: { districtname: district } }],
+        };
+        const suburbResponse = {
+          features: [{ properties: { suburbname: suburb } }],
+        };
+        mockGetGeocodedAddress.mockResolvedValue(
+          geocodeResponse as GeocodeResponse
+        );
+        mockGetDistrictBoundary.mockResolvedValue(
+          boundaryResponse as StateElectoralDistrictResponse
+        );
+        mockGetSuburbBoundary.mockResolvedValue(
+          suburbResponse as SuburbResponse
+        );
+        const result = await lookupAddress(address);
+        expect(result.address).toBe(address);
+        expect(result.suburbName).toBe(suburb);
+      }
+    );
 
-      mockGetGeocodedAddress.mockResolvedValue(geocodeResponse as GeocodeResponse);
-      mockGetAdministrativeBoundary.mockResolvedValue(boundaryResponse as AdministrativeBoundaryResponse);
+    it("should throw InternalServerError on unexpected errors", async () => {
+      mockGetGeocodedAddress.mockRejectedValue(new Error("Network error"));
 
-      const result = await lookupAddress(address);
-      expect(result.address).toBe(address);
-      expect(result.suburbName).toBe(district);
-    });
-
-    it('should throw InternalServerError on unexpected errors', async () => {
-      mockGetGeocodedAddress.mockRejectedValue(new Error('Network error'));
-      
-      await expect(lookupAddress('test address')).rejects.toThrow(InternalServerError);
+      await expect(lookupAddress("test address")).rejects.toThrow(
+        InternalServerError
+      );
     });
   });
 });
