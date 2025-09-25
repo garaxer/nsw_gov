@@ -1,15 +1,8 @@
+import { LocationInfo } from "./domain";
+
 export type AddressLookupResponse = {
-  location: {
-    latitude: number;
-    longitude: number;
-  };
-  address: string;
-  suburbName: string;
-  stateElectoralDistrict: string;
-  propertyId: number;
-  principalAddressSiteOid: number;
   query: string;
-};
+} & LocationInfo;
 
 export type ErrorResponse = {
   error: string;

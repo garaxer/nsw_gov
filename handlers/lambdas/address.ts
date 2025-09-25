@@ -6,9 +6,7 @@ import { AddressLookupResponse } from "../src/types/responses";
 import config from "../src/config";
 
 /** Lambda handler for NSW address lookup */
-export const handler: APIGatewayProxyHandlerV2 = async (
-  event
-) => {
+export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   const queryParams = event.queryStringParameters ?? {};
   const query = queryParams.q ?? queryParams.query ?? queryParams.address ?? "";
 
@@ -26,15 +24,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (
 
     return Reply.success<AddressLookupResponse>(
       {
-        location: {
-          latitude: result.latitude,
-          longitude: result.longitude,
-        },
-        address: result.address,
-        suburbName: result.suburbName,
-        stateElectoralDistrict: result.stateElectoralDistrict,
-        propertyId: result.propertyId,
-        principalAddressSiteOid: result.principalAddressSiteOid,
+        ...result,
         query: query,
       },
       200,
