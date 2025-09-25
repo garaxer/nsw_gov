@@ -1,11 +1,10 @@
 import { handler } from './lambdas/address';
-import { APIGatewayProxyEventV2 } from 'aws-lambda';
+import { APIGatewayProxyEventV2, APIGatewayProxyResult, APIGatewayProxyResultV2, Callback, Context } from 'aws-lambda';
 
 // Simple mock event creator
 const createMockEvent = (
   path = '/',
   method = 'GET',
-  body?: any,
   queryParams?: Record<string, string>
 ): APIGatewayProxyEventV2 => ({
   version: '2.0',
@@ -34,9 +33,9 @@ const createMockEvent = (
       time: '',
       timeEpoch: 0
   },
-  body: body ? JSON.stringify(body) : undefined,
+  body: undefined,
   isBase64Encoded: false,
-  queryStringParameters: queryParams || {},
+  queryStringParameters: queryParams ?? {},
   pathParameters: {},
 });
 
@@ -76,13 +75,13 @@ async function runLocal() {
     const { path, method, queryParams } = parseArgs();
     
     // Create a mock event
-    const event = createMockEvent(path, method, undefined, queryParams);
+    const event = createMockEvent(path, method, queryParams);
     
     console.log('Query Parameters:', queryParams);
     console.log('\n' + '='.repeat(50) + '\n');
     
     // Call the handler
-    const result = await handler(event, {} as any, {} as any);
+    const result = await handler(event, {} as Context, {} as Callback<APIGatewayProxyResultV2<APIGatewayProxyResult>>);
     
     console.log('Lambda Response:');
     console.log(JSON.stringify(result, null, 2));

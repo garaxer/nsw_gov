@@ -7,8 +7,8 @@ import { AddressLookupResponse } from "handlers/src/types/responses";
 export const handler: APIGatewayProxyHandlerV2<APIGatewayProxyResult> = async (
   event
 ) => {
-  const queryParams = event.queryStringParameters || {};
-  const query = queryParams.q || queryParams.query || queryParams.address || "";
+  const queryParams = event.queryStringParameters ?? {};
+  const query = queryParams.q ?? queryParams.query ?? queryParams.address ?? "";
 
   console.log("Address search query:", query);
 

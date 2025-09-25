@@ -1,29 +1,30 @@
 {
-  "name": "gary-invoice",
+  "name": "gary-address",
   "private": true,
   "version": "1.0.0",
   "scripts": {
     "lint": "eslint .",
-    "lint-script": "bash scripts/lint.sh",
-    "lint-fix": "bash scripts/lint.sh --fix true",
-    "build:web": "cd web/ && yarn build",
     "build:stack": "cd infrastructure/ && yarn build",
     "deploy": "cd infrastructure/ && yarn deploy",
-    "destroy": "cd infrastructure/ && yarn destroy"
+    "destroy": "cd infrastructure/ && yarn destroy",
+    "dev": "yarn workspace handlers dev",
+    "build": "yarn workspaces foreach -A -t run build",
+    "test": "yarn workspaces foreach -A -t run test"
   },
-  "workspaces": {
-    "packages": [
-      "infrastructure",
-      "handlers"
-    ]
-  },
+  "workspaces": [
+    "infrastructure",
+    "handlers"
+  ],
   "devDependencies": {
-    "@types/node": "^24.5.2",
     "@eslint/eslintrc": "^3.3.1",
-    "eslint": "^9.36.0",
     "@eslint/js": "^9.36.0",
+    "@types/node": "^24.5.2",
+    "@typescript-eslint/eslint-plugin": "^8.44.1",
     "@typescript-eslint/parser": "^8.44.1",
+    "eslint": "^9.36.0",
     "globals": "^16.4.0",
+    "jiti": "^2.6.0",
     "typescript": "^5.9.2"
-  }
+  },
+  "packageManager": "yarn@4.6.0"
 }

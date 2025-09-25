@@ -4,6 +4,6 @@ import getStackProps from "./environment";
 
 const app = new App();
 
-const invoiceProps = getStackProps(app);
+const stackProps = getStackProps(app);
 
-new GovStack(app, invoiceProps.stackName, invoiceProps);
+new GovStack(app, stackProps.stackName, stackProps);

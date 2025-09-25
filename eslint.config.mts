@@ -12,7 +12,12 @@ const compat = new FlatCompat({
 export default defineConfig([
   {
     files: ["handlers/**/*.{js,mjs,cjs,ts,mts,cts}", "infrastructure/**/*.ts"],
-    ignores: ["dist/**", "node_modules/**"],
+    ignores: [
+      "dist/**",
+      "node_modules/**",
+      "infrastructure/cdk.out/**",
+      ".build/**"
+    ],
     plugins: { js },
     extends: ["js/recommended"],
     languageOptions: {
@@ -23,7 +28,6 @@ export default defineConfig([
           "./tsconfig.json",
           "./handlers/tsconfig.json",
           "./infrastructure/tsconfig.json",
-          "./web/tsconfig.json"
         ],
         tsconfigRootDir: __dirname,
         sourceType: "module",

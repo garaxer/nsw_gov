@@ -75,7 +75,7 @@ class Reply {
     error: Error & { code?: number },
     options?: Partial<LambdaResponseOptions>
   ): APIGatewayProxyResult {
-    const statusCode = error.code || 500;
+    const statusCode = error.code ?? 500;
     return this.error(error.message, statusCode, options);
   }
 }

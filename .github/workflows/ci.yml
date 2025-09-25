@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "yarn"
+
+      - name: check yarn version
+        run: yarn --version
+
+      - name: Install dependencies
+        run: |
+          yarn install --frozen-lockfile
+          cd handlers && yarn install --frozen-lockfile
+
+      - name: Lint
+        run: cd handlers && yarn lint
+
+      - name: Type check
+        run: cd handlers && yarn build
+
+      - name: Run unit tests
+        run: cd handlers && yarn test
+
+      - name: Run E2E tests
+        run: cd handlers && yarn test:e2e
+
+      - name: Upload coverage
+        uses: codecov/codecov-action@v3
+        with:
+          directory: ./handlers/coverage
