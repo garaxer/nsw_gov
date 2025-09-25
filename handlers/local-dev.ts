@@ -1,7 +1,6 @@
 import { handler } from "./lambdas/address";
 import {
   APIGatewayProxyEventV2,
-  APIGatewayProxyResult,
   APIGatewayProxyResultV2,
   Callback,
   Context,
@@ -88,7 +87,7 @@ async function runLocal() {
     const result = await handler(
       event,
       {} as Context,
-      {} as Callback<APIGatewayProxyResultV2<APIGatewayProxyResult>>
+      {} as Callback<APIGatewayProxyResultV2>
     );
 
     console.log("Lambda Response:");
