@@ -13,8 +13,10 @@ Test it out [20 martin place](https://tehc5tz6eri6y7vnye7hym7u6a0vrgcp.lambda-ur
 ```bash
 # Install and test locally
 npm install && cd handlers
-npm run dev "q=346 PANORAMA AVENUE BATHURST"
+npm run dev
 ```
+Then head to: 
+http://localhost:3000?q=346%20PANORAMA%20AVENUE%20BATHURST
 
 ## API Usage
 
@@ -52,11 +54,12 @@ graph LR
 ## Local Development
 
 ```bash
+npm run dev
 # Valid address test
-npm run dev "q=1 MARTIN PLACE SYDNEY"
+# http://localhost:3000/?q=1%20MARTIN%20PLACE%20SYDNEY
 
 # Error handling test
-npm run dev "q=INVALID ADDRESS"
+# http://localhost:3000?q=INVALID%20ADDRESS
 
 # Run tests
 npm run test
