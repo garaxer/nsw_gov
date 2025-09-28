@@ -7,7 +7,7 @@ export enum AwsEnvironment {
 
 const stackPropsDict: Record<AwsEnvironment, GovStackProps> = {
   [AwsEnvironment.Production]: {
-    stageName: "prod",
+    stageName: AwsEnvironment.Production,
   },
 };
 
@@ -19,7 +19,7 @@ const getStackProps = (app: App) => {
   const stage =
     (app.node.tryGetContext("stage") as string) ??
     process.env.DEFAULT_STAGE ??
-    "prod";
+    AwsEnvironment.Production;
 
   const config = stackPropsDict[stage as AwsEnvironment];
 
