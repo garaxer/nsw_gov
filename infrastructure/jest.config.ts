@@ -8,8 +8,5 @@ module.exports = {
   testMatch: ["**/__tests__/**/*.ts?(x)", "**/?(*.)+(spec|test).ts?(x)"],
   moduleNameMapper: {
     "@src(.*)$": "<rootDir>/src/$1",
-    "@sls(.*)$": "<rootDir>/sls/$1",
-    "@libs(.*)$": "<rootDir>/src/libs/$1",
-    "@types(.*)$": "<rootDir>/src/types/$1",
   },
 };
