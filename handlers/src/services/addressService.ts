@@ -3,7 +3,7 @@ import {
   GeocodeResponse,
   LocationInfo,
 } from "../types/domain";
-import { NotFoundError, InternalServerError } from "../errors/http";
+import { InternalServerError, httpErrors } from "../errors/http";
 import {
   getGeocodedAddress,
   getDistrictBoundary,
@@ -59,7 +59,7 @@ export const lookupAddress = async (address: string): Promise<LocationInfo> => {
     const [longitude, latitude] = getLatLong(geocodeResponse);
     logger.debug("Geocoded coordinates", { longitude, latitude });
 
-    // Step 2a: Get administrative boundary (state electoral district and suburb/locality)
+    // Step 2: Get administrative boundary (state electoral district and suburb/locality)
     const [boundaryResponse, suburbResponse] = await Promise.all([
       getDistrictBoundary(longitude, latitude),
       getSuburbBoundary(longitude, latitude),
@@ -76,15 +76,13 @@ export const lookupAddress = async (address: string): Promise<LocationInfo> => {
       suburb: combined.suburbName,
       district: combined.stateElectoralDistrict,
     });
+
     return combined;
   } catch (error) {
     logger.error("Address lookup error", {
       error: error instanceof Error ? error.message : String(error),
     });
-    if (
-      error instanceof NotFoundError ||
-      error instanceof InternalServerError
-    ) {
+    if (httpErrors.some((ErrorClass) => error instanceof ErrorClass)) {
       throw error;
     }
     throw new InternalServerError(
