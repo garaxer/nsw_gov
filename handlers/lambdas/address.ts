@@ -1,9 +1,9 @@
 import "dotenv/config";
 import { APIGatewayProxyHandlerV2 } from "aws-lambda";
 import Reply from "../src/utils/reply";
-import { lookupAddress } from "../src/services/addressService";
 import { AddressLookupResponse } from "../src/types/responses";
 import config from "../src/config";
+import { cachedLookupAddress } from "../src/services/cachedAddressService";
 
 /** Lambda handler for NSW address lookup */
 export const handler: APIGatewayProxyHandlerV2 = async (event) => {
@@ -24,7 +24,7 @@ export const handler: APIGatewayProxyHandlerV2 = async (event) => {
   }
 
   try {
-    const result = await lookupAddress(query.trim());
+    const result = await cachedLookupAddress(query.trim());
 
     return Reply.success<AddressLookupResponse>(
       {
