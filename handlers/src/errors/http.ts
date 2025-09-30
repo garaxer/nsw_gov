@@ -23,3 +23,10 @@ export class InternalServerError extends Error {
 export class BadGatewayError extends Error {
   code = HttpStatus.BadGatewayError;
 }
+
+export const httpErrors = [
+  NotFoundError,
+  InternalServerError,
+  BadGatewayError,
+  BadRequestError,
+];
